@@ -33,7 +33,7 @@ def home():
             return redirect(request.url)
 
     params = { 
-            "images": os.listdir(current_app.config['UPLOAD_FOLDER']) 
+            "images": sorted(os.listdir(current_app.config['UPLOAD_FOLDER']))
         }
 
     return render_template("index.html", params=params)
