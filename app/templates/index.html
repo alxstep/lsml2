@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <meta charset="utf-8">
+    <title>Pnemonia checker</title>
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css">
+
+    <style>
+      html {
+        background: #e0e0e0;
+      }
+      body {
+        margin: 20px;
+        padding:  20px;
+        border: solid #c0c0c0 1px;        
+      }
+    </style>
+
+  </head>
+
+  <body>
+    <div>
+      <h2>Pnemonia checker</h2>
+      <hr><br>
+      <div>
+        <h3>Upload image</h3>
+        <form id="upload_img" enctype="multipart/form-data" method="post" onchange="document.getElementById('submit').click()" action="">
+           <input id="file" name="file" type="file" /><br>
+           <input type="submit" value="Submit" id="submit" hidden="hidden"/>
+        </form>
+      </div>      
+
+      <div>
+        {% for msg in get_flashed_messages() %}
+          <p style="color: blue;">{{ msg }}</p>
+        {% endfor %}
+      </div>
+
+      <hr><br>
+
+      <div>
+        <h3>Uploaded images</h3>
+        <br>
+        <table class="table">
+          <thead>
+            <tr>
+              <th>Name</th><th>Check image</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for img in params.images %}
+              <tr><td>{{ img }}</td><td><button id="btn" type="button" name="{{ img }}" onclick="processImg(this.getAttribute('name'))">Check</button></td></tr>
+            {% endfor %}
+          </tbody>
+        </table>
+
+      </div>
+
+      <br><br>
+
+      <div>
+        <h3>Image Processing Status</h3>
+        <br>
+        <table class="table">
+          <thead>
+            <tr>
+              <th>ID</th><th>Status</th><th>Result</th>
+            </tr>
+          </thead>
+          <tbody id="result">
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="container">
+      {% block content %}{% endblock %}
+    </div>
+
+    <script>
+      function processImg(img_name) {
+        fetch('/tasks', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ name: img_name }),
+        })
+        .then(response => response.json())
+        .then(data => getStatus(data.task_id));
+      }
+
+      function getStatus(taskID) {
+        fetch(`/tasks/${taskID}`, {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+        })
+        .then(response => response.json())        
+        .then(res => {
+          const task_status = res.task_status;
+          const task_result = res.task_result ? res.task_result : "";
+          
+          const newRow = document.getElementById('result').insertRow(0);
+          const row = `<tr><td>${taskID}</td><td>${task_status}</td><td>${task_result}</td></tr>`;
+          newRow.innerHTML = row;
+
+          if (task_status === 'SUCCESS' || task_status === 'FAILURE') return false;
+          setTimeout(function() {
+            getStatus(res.task_id);
+          }, 2000);
+        })
+        .catch(err => console.log(err));
+      }
+    </script>
+
+  </body>
+</html>

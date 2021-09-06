@@ -1,0 +1,53 @@
+version: '3.8'
+
+services:
+
+  web:
+    build: ./app
+    image: web
+    container_name: web
+    ports:
+      - 5000:5000
+    command: python manage.py run -h 0.0.0.0
+    volumes:
+      - ./uploads:/opt/app/uploads
+    environment:
+      - DEBUG=1
+      - APP_SETTINGS=config.Config
+      - CELERY_BROKER_URL=redis://redis:6379/0
+      - CELERY_RESULT_BACKEND=redis://redis:6379/0
+    depends_on:
+      - redis
+
+  worker:
+    build: ./app
+    container_name: worker
+    command: celery -A tasks.celery worker --loglevel=info    
+    volumes:
+      - ./uploads:/opt/app/uploads
+    environment:
+      - APP_SETTINGS=config.Config
+      - CELERY_BROKER_URL=redis://redis:6379/0
+      - CELERY_RESULT_BACKEND=redis://redis:6379/0
+      - RESTful_WS_URL=http://model:5001
+    depends_on:
+      - web
+      - redis
+      - model
+
+  model:
+    build: ./model
+    container_name: model
+    command: python api.py
+    expose:
+      - 5001
+    image: model    
+    volumes:
+      - ./uploads:/opt/app/uploads
+    environment:
+      - DEBUG=1
+      - APP_SETTINGS=config.Config
+
+  redis:    
+    image: redis
+
