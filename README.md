@@ -1,15 +1,15 @@
 
 ## Final project: Pneumonia checker 
 
-This app helps identify pneumonia using a trained model to predict pneumonia on the provided chest X-ray. It has web gui and performes all tasks asynchronously.
+This app helps identify pneumonia using a trained model to predict pneumonia on the provided chest X-ray. It has web gui and performs all tasks asynchronously.
 
 
 ![alt text](https://testdriven.io/static/images/blog/flask-celery/flask-celery-flow.png)
 
-Images:
-web: flask web app
-worker: celery
-model: flask restful web service, trained model. 
+Images: \
+web: flask web app \
+worker: celery \
+model: flask restful web service, trained model \
 redis: message broker
 
 Container orchestration tool is used for managing containers.
@@ -22,10 +22,10 @@ VGG16 is a convolutional neural network model.
 The architecture of VGG16: 
 ![alt text](https://neurohive.io/wp-content/uploads/2018/11/vgg16-neural-network.jpg)
 
-Trained model is already included into model image.
-To generate a new model:
-1. run `model/model_train.ipynb` 
-2. rebuild docker images after that.
+Trained model is already included into model image. \
+To generate a new model: \
+1. run `model/model_train.ipynb` \
+2. rebuild docker images.
 
 ## Dataset
 
@@ -47,8 +47,8 @@ $ sudo docker-compose up --build
 Open browser to view web gui 
 [http://localhost:5000](http://localhost:5000)
 
-Get prediction:
-1. upload new X-ray (or use uploaded one)
-2. click 'Check' (it may take a time to get a prediction at the first time)
+Get prediction: \
+1. upload new X-ray (or use uploaded one) \
+2. click 'Check' (it may take some time to get a prediction at the first time)
 
 POSSIBLE RESULT: 0 - NORMAL, 1 - PNEUMONIA, -1 - ERROR
