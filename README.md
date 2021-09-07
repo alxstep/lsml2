@@ -22,9 +22,9 @@ VGG16 is a convolutional neural network model.
 The architecture of VGG16: 
 ![alt text](https://neurohive.io/wp-content/uploads/2018/11/vgg16-neural-network.jpg)
 
-Trained model is already included into model image. \
-To generate a new model: \
-1. run `model/model_train.ipynb` \
+Trained model is already included into model image.
+To generate a new model:
+1. run `model/model_train.ipynb`
 2. rebuild docker images.
 
 ## Dataset
@@ -47,8 +47,8 @@ $ sudo docker-compose up --build
 Open browser to view web gui 
 [http://localhost:5000](http://localhost:5000)
 
-Get prediction: \
-1. upload new X-ray (or use uploaded one) \
+Get prediction:
+1. upload new X-ray (or use uploaded one)
 2. click 'Check' (it may take some time to get a prediction at the first time)
 
 POSSIBLE RESULT: 0 - NORMAL, 1 - PNEUMONIA, -1 - ERROR
